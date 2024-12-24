@@ -45,12 +45,12 @@ namespace PluggySyncToYnab
             {
                 if (transaction.Type == TransactionType.DEBIT)
                 {
-                    ynabTransactions.AddRange(MapDebitTransactions(transaction));
+                    ynabTransactions.Add(MapDebitTransaction(transaction));
                 }
 
                 if (transaction.Type == TransactionType.CREDIT)
                 {
-                    ynabTransactions.AddRange(MapCreditTransactions(transaction));
+                    ynabTransactions.Add(MapCreditTransaction(transaction));
                 }
             }
 
@@ -69,38 +69,32 @@ namespace PluggySyncToYnab
             Console.WriteLine("Done!");
         }
 
-        private static List<SaveTransaction> MapDebitTransactions(Transaction transaction)
+        private static SaveTransaction MapDebitTransaction(Transaction transaction)
         {
             var payeeName = CleanDescription(transaction.Description, "Compra no débito|", "Transferência enviada|");
 
-            return new List<SaveTransaction>
+            return new SaveTransaction
             {
-                new SaveTransaction
-                {
-                    AccountId = _nubankYnabAccountId,
-                    Date = transaction.Date,
-                    Amount = (long)(transaction.Amount * 1000),
-                    PayeeName = payeeName,
-                    Cleared = GetClearedStatus(transaction.Status),
-                }
+                AccountId = _nubankYnabAccountId,
+                Date = transaction.Date,
+                Amount = (long)(transaction.Amount * 1000),
+                PayeeName = payeeName,
+                Cleared = GetClearedStatus(transaction.Status),
             };
         }
 
-        private static List<SaveTransaction> MapCreditTransactions(Transaction transaction)
+        private static SaveTransaction MapCreditTransaction(Transaction transaction)
         {
             var payeeName = CleanDescription(transaction.Description, "Transferência Recebida|");
 
-            return new List<SaveTransaction>
+            return new SaveTransaction
             {
-                new SaveTransaction
-                {
-                    AccountId = _nubankYnabAccountId,
-                    Date = transaction.Date,
-                    Amount = (long)(transaction.Amount * 1000),
-                    PayeeName = payeeName,
-                    CategoryId = _readyToAssignCategoryId,
-                    Cleared = GetClearedStatus(transaction.Status),
-                }
+                AccountId = _nubankYnabAccountId,
+                Date = transaction.Date,
+                Amount = (long)(transaction.Amount * 1000),
+                PayeeName = payeeName,
+                CategoryId = _readyToAssignCategoryId,
+                Cleared = GetClearedStatus(transaction.Status),
             };
         }
 
@@ -116,7 +110,7 @@ namespace PluggySyncToYnab
             return description;
         }
 
-        private static SaveTransaction.ClearedEnum GetClearedStatus(TransactionStatus? status) =>
-            status == TransactionStatus.POSTED ? SaveTransaction.ClearedEnum.Cleared : SaveTransaction.ClearedEnum.Uncleared;
+        private static ClearedEnum GetClearedStatus(TransactionStatus? status) =>
+            status == TransactionStatus.POSTED ? ClearedEnum.Cleared : ClearedEnum.Uncleared;
     }
 }
