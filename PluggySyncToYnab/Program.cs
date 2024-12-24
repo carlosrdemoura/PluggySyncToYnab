@@ -70,6 +70,7 @@ namespace PluggySyncToYnab
                 Amount = (long)(transaction.Amount * 1000),
                 PayeeName = payeeName,
                 Cleared = GetClearedStatus(transaction.Status),
+                ImportId = transaction.Id.ToString(),
             };
         }
 
@@ -85,6 +86,7 @@ namespace PluggySyncToYnab
                 PayeeName = payeeName,
                 CategoryId = _readyToAssignCategoryId,
                 Cleared = GetClearedStatus(transaction.Status),
+                ImportId = transaction.Id.ToString(),
             };
         }
 
