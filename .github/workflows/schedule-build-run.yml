@@ -1,0 +1,36 @@
+name: Build and Run PluggySyncToYnab
+
+on:
+  schedule:
+    - cron: '0 9 * * *'
+  workflow_dispatch:
+
+jobs:
+  build-and-run:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build the application
+      run: dotnet build --configuration Release
+
+    - name: Run the application
+      env:
+        PLUGGY_CLIENT_ID: ${{ secrets.PLUGGY_CLIENT_ID }}
+        PLUGGY_CLIENT_SECRET: ${{ secrets.PLUGGY_CLIENT_SECRET }}
+        YNAB_BUDGET_ID: ${{ secrets.YNAB_BUDGET_ID }}
+        YNAB_TOKEN: ${{ secrets.YNAB_TOKEN }}
+        NUBANK_PLUGGY_ACCOUNT_ID: ${{ secrets.NUBANK_PLUGGY_ACCOUNT_ID }}
+        NUBANK_YNAB_ACCOUNT_ID: ${{ secrets.NUBANK_YNAB_ACCOUNT_ID }}
+        READY_TO_ASSIGN_CATEGORY_ID: ${{ secrets.READY_TO_ASSIGN_CATEGORY_ID }}
+      run: dotnet run --configuration Release --project PluggySyncToYnab
