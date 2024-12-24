@@ -54,17 +54,7 @@ namespace PluggySyncToYnab
                 }
             }
 
-            try
-            {
-                if (ynabTransactions.Any())
-                {
-                    _ynabClient.Transactions.CreateTransaction(_ynabBudgetId, new SaveTransactionsWrapper { Transactions = ynabTransactions });
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Could not add transactions to YNAB. Error: {ex}");
-            }
+            _ynabClient.Transactions.CreateTransaction(_ynabBudgetId, new SaveTransactionsWrapper { Transactions = ynabTransactions });
 
             Console.WriteLine("Done!");
         }
