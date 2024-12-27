@@ -23,13 +23,13 @@ namespace PluggySyncToYnab
         static async Task Main(string[] args)
         {
             DateTime today = DateTime.UtcNow;
-            DateTime sevenDaysAgo = today.AddDays(-7);
+            DateTime transactionsStartDate = today.AddDays(-2);
 
             Console.WriteLine("Started syncing.");
 
             TransactionParameters parameters = new()
             {
-                DateFrom = sevenDaysAgo,
+                DateFrom = transactionsStartDate,
                 DateTo = today,
                 Page = 1,
                 PageSize = 100,
@@ -46,14 +46,14 @@ namespace PluggySyncToYnab
                 if (transaction.Type == TransactionType.DEBIT)
                 {
                     SaveTransaction mappedTransaction = MapDebitTransaction(transaction);
-                    Console.WriteLine($"{mappedTransaction.Date.ToString("d")} | {mappedTransaction.PayeeName} | {mappedTransaction.Amount}");
+                    Console.WriteLine($"{mappedTransaction.Date.ToString("dd/MM/yyyy")} | {mappedTransaction.PayeeName} | {mappedTransaction.Amount / 1000}");
                     ynabTransactions.Add(mappedTransaction);
                 }
 
                 if (transaction.Type == TransactionType.CREDIT)
                 {
                     SaveTransaction mappedTransaction = MapCreditTransaction(transaction);
-                    Console.WriteLine($"{mappedTransaction.Date.ToString("d")} | {mappedTransaction.PayeeName} | {mappedTransaction.Amount}");
+                    Console.WriteLine($"{mappedTransaction.Date.ToString("dd/MM/yyyy")} | {mappedTransaction.PayeeName} | {mappedTransaction.Amount / 1000}");
                     ynabTransactions.Add(mappedTransaction);
                 }
             }
