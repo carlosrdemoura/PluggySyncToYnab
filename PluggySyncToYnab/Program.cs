@@ -45,12 +45,16 @@ namespace PluggySyncToYnab
             {
                 if (transaction.Type == TransactionType.DEBIT)
                 {
-                    ynabTransactions.Add(MapDebitTransaction(transaction));
+                    SaveTransaction mappedTransaction = MapDebitTransaction(transaction);
+                    Console.WriteLine($"{mappedTransaction.Date.ToString("d")} | {mappedTransaction.PayeeName} | {mappedTransaction.Amount}");
+                    ynabTransactions.Add(mappedTransaction);
                 }
 
                 if (transaction.Type == TransactionType.CREDIT)
                 {
-                    ynabTransactions.Add(MapCreditTransaction(transaction));
+                    SaveTransaction mappedTransaction = MapCreditTransaction(transaction);
+                    Console.WriteLine($"{mappedTransaction.Date.ToString("d")} | {mappedTransaction.PayeeName} | {mappedTransaction.Amount}");
+                    ynabTransactions.Add(mappedTransaction);
                 }
             }
 
@@ -61,7 +65,7 @@ namespace PluggySyncToYnab
 
         private static SaveTransaction MapDebitTransaction(Transaction transaction)
         {
-            var payeeName = CleanDescription(transaction.Description, "Compra no débito|", "Transferência enviada|");
+            string payeeName = GetFormattedPayeeFromDescription(transaction.Description);
 
             return new SaveTransaction
             {
@@ -76,7 +80,7 @@ namespace PluggySyncToYnab
 
         private static SaveTransaction MapCreditTransaction(Transaction transaction)
         {
-            var payeeName = CleanDescription(transaction.Description, "Transferência Recebida|");
+            string payeeName = GetFormattedPayeeFromDescription(transaction.Description);
 
             return new SaveTransaction
             {
@@ -90,7 +94,16 @@ namespace PluggySyncToYnab
             };
         }
 
-        private static string CleanDescription(string description, params string[] prefixes)
+        private static string GetFormattedPayeeFromDescription(string description)
+        {
+            var payeeName = GetPayeeFromTransactionDescription(description, "Compra no débito|", "Transferência enviada|", "Transferência Recebida|");
+
+            string capitalizedPayeeName = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(payeeName.ToLower());
+
+            return capitalizedPayeeName;
+        }
+
+        private static string GetPayeeFromTransactionDescription(string description, params string[] prefixes)
         {
             foreach (var prefix in prefixes)
             {
