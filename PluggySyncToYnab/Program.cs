@@ -46,7 +46,7 @@ namespace PluggySyncToYnab
                 if (transaction.Type == TransactionType.DEBIT)
                 {
                     SaveTransaction mappedTransaction = MapDebitTransaction(transaction);
-                    Console.WriteLine($"{mappedTransaction.Date.ToString("dd/MM/yyyy")} | {mappedTransaction.PayeeName} | {(mappedTransaction.Amount / 1000.0f}");
+                    Console.WriteLine($"{mappedTransaction.Date.ToString("dd/MM/yyyy")} | {mappedTransaction.PayeeName} | {mappedTransaction.Amount / 1000.0f}");
                     ynabTransactions.Add(mappedTransaction);
                 }
 
