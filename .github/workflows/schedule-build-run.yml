@@ -2,7 +2,7 @@ name: Build and Run PluggySyncToYnab
 
 on:
   schedule:
-    - cron: '30 7 * * *'
+    - cron: '0 5 * * *'
   workflow_dispatch:
 
 jobs:
