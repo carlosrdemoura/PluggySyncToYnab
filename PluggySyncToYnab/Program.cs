@@ -23,7 +23,7 @@ namespace PluggySyncToYnab
         static async Task Main(string[] args)
         {
             DateTime today = DateTime.UtcNow;
-            DateTime transactionsStartDate = today.AddDays(-1);
+            DateTime transactionsStartDate = today.AddDays(-7);
 
             Console.WriteLine("Started syncing.");
 
